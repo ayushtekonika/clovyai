@@ -1,0 +1,13 @@
+version: '3'
+services:
+  optimis:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: optimis:1.0
+    restart: always
+#    command: bash bin/start.sh
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
