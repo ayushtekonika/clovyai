@@ -1,6 +1,6 @@
 version: '3'
 services:
-  mbanq:
+  optimis:
     build:
       context: .
       dockerfile: Dockerfile

@@ -4,9 +4,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi import APIRouter
 from contextlib import asynccontextmanager
 
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from pydantic import BaseModel
-from app.app import get_summary
+from app.optimis import get_summary
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -14,7 +14,7 @@ async def lifespan(app: FastAPI):
     yield
     
 # Load environment variables
-# load_dotenv()
+load_dotenv()
 app = FastAPI(lifespan=lifespan)
 router = APIRouter(prefix="/api/v1")
     
@@ -44,6 +44,6 @@ app.include_router(router)
 # add router prefix api/v1
 
 # to run it locally
-if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+# if __name__ == '__main__':
+#     import uvicorn
+#     uvicorn.run(app, host='0.0.0.0', port=8000)
