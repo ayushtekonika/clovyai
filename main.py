@@ -20,6 +20,7 @@ router = APIRouter(prefix="/api/v1")
     
 class QueryModel(BaseModel):
     query: str
+    patientID: str
 
 # Define your routes here
 @router.get("/health")
@@ -29,11 +30,13 @@ async def health():
 @router.post("/summary")
 def summary(query_model: QueryModel):
     query = query_model.query
+    patientID = query_model.patientID
     if not query:
         raise HTTPException(status_code=400, detail="Missing 'query' in request body")
+    if not patientID:
+        raise HTTPException(status_code=400, detail="Missing 'patientID' in request body")
 
     try:
-        # Get the summary from the agent
         response = get_summary(query)
         return {"response": response}
     except Exception as e:
