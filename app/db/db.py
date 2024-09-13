@@ -1,7 +1,10 @@
 import mysql.connector
 from mysql.connector import Error
+from dotenv import load_dotenv
+import os
 
 # Global variable for the connection
+load_dotenv()
 db_connection = None
 
 def create_connection():
@@ -9,11 +12,11 @@ def create_connection():
     if db_connection is None or not db_connection.is_connected():
         try:
             db_connection = mysql.connector.connect(
-                host="localhost",  # Connecting via localhost due to port forwarding
-                port=3306, 
-                user="optimis",
-                password="Admin@123",
-                database="optimis_development"
+                host=os.environ["DB_HOST"],  # Connecting via localhost due to port forwarding
+                port=os.environ["DB_PORT"], 
+                user=os.environ["DB_USER"],
+                password=os.environ["DB_PASSWORD"],
+                database=os.environ["DB_NAME"]
             )
             print("Connection to MySQL DB successful")
         except Error as e:
