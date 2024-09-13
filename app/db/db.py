@@ -10,7 +10,7 @@ def create_connection():
         try:
             db_connection = mysql.connector.connect(
                 host="localhost",  # Connecting via localhost due to port forwarding
-                port=3310, 
+                port=3306, 
                 user="optimis",
                 password="Admin@123",
                 database="optimis_development"
