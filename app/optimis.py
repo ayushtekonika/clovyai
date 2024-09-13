@@ -1,5 +1,6 @@
 from langchain_groq import ChatGroq
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -37,9 +38,40 @@ def get_summary(query: str) -> str:
     else:
         return ""
     
-def extract_entity(query: str) -> str:
-    extractionPrompt = """<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a grader assessing relevance of a retrieved document to a user's medical questionnaire. Your task is to extract information from the document and answer the user's questions based on the provided response options. For Yes/No questions, select one of the given options based on the document. For questions with no provided options, extract the relevant information from the document. \n
-            Provide the answers in an array format with answer being a object { question: question that is mentioned, id: id mentioned beside question, answer: answer of the question }. If the document does not contain information relevant to a particular question, return "NA" as the answer. \n
+def stringToJson(entity: str):
+    # Given data
+    data = entity
+
+    # Remove the "break" statement and split the data into two parts
+    data_parts = data.replace("break", "").split("[")
+    data_parts = [part.strip() for part in data_parts if part.strip()]
+
+    # Initialize an empty list to store the JSON data
+    json_data = []
+
+    # Process each part of the data
+    for part in data_parts:
+        # Remove the trailing comma and closing bracket
+        part = part.rstrip(", ]")
+        
+        # Add the opening bracket and split into individual items
+        items = "[" + part + "]"
+        items = json.loads(items)
+        
+        # Add the items to the JSON data list
+        json_data.extend(items)
+
+    # Convert the JSON data list to a JSON string
+    # json_string = json.dumps(json_data, indent=4)
+
+    # Print the JSON string
+    print(type(json_data))
+    return json_data
+    
+def extract_entity(query: str):
+    
+    extractionPrompt1 = """<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a grader assessing relevance of a retrieved document to a user's medical questionnaire. Your task is to extract information from the document and answer the user's questions based on the provided response options. For Yes/No questions, select one of the given options based on the document. For questions with no provided options, extract the relevant information from the document. \n
+            Provide the answers in just a json array format with answer being a object { question: question that is mentioned, id: id mentioned beside question, answer: answer of the question }. If the document does not contain information relevant to a particular question, return "NA" as the answer. \n
             Here's the user's questionnaire: \n
             1. Do you have allergies? (Yes/No) (66dfc96f4bef40d7e657705b)
             2. Do you have anemia? (Yes/No) (66dfc9804bef40d7e657705d)
@@ -68,13 +100,21 @@ def extract_entity(query: str) -> str:
             25. Do you have high or low blood pressure? (Yes/No) (66e11ebdc5ebd18485431106)
             26. Have you been diagnosed with HIV/AIDS? (Yes/No) (66e11f24c5ebd18485431108)
             27. Do you experience incontinence? (Yes/No) (66e11f6ac5ebd1848543110a)
+
+            <|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{""" + query + """}\n\n
+            <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+    """
+    extractionPrompt2 = """
+    <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a grader assessing relevance of a retrieved document to a user's medical questionnaire. Your task is to extract information from the document and answer the user's questions based on the provided response options. For Yes/No questions, select one of the given options based on the document. For questions with no provided options, extract the relevant information from the document. \n
+            Provide the answers in just a json array format with answer being a object { question: question that is mentioned, id: id mentioned beside question, answer: answer of the question }. If the document does not contain information relevant to a particular question, return "NA" as the answer. \n
+            Here's the user's questionnaire: \n
             28. Do you have kidney problems? (Yes/No) (66e11f97c5ebd1848543110c)
             29. Do you have any metal implants? (Yes/No) (66e13affc5ebd1848543110e)
             30. Have you been diagnosed with MRSA? (Yes/No) (66e13b12c5ebd18485431110)
             31. Do you have multiple sclerosis? (Yes/No) (66e13b3cc5ebd18485431112)
             32. Do you have a muscular disease? (Yes/No) (66e13b6ac5ebd18485431114)
             33. Have you been diagnosed with osteoporosis? (Yes/No) (66e13b81c5ebd18485431116)
-            34. Do you have Parkinson’s disease? (Yes/No) (66e13b9cc5ebd18485431118)
+            34. Do you have Parkinson's disease? (Yes/No) (66e13b9cc5ebd18485431118)
             35. Have you been diagnosed with rheumatoid arthritis? (Yes/No) (66e13bbec5ebd1848543111a)
             36. Do you have a history of seizures? (Yes/No) (66e13bd5c5ebd1848543111c)
             37. Are you a smoker? (Yes/No) (66e13be8c5ebd1848543111e)
@@ -88,24 +128,27 @@ def extract_entity(query: str) -> str:
             45. Have you had two or more falls in the last year? (Yes/No) (66dfcb964bef40d7e657706c)
             46. Are you considered to be at risk for falls? (Yes/No) (66dfcbb24bef40d7e657706e)
             47. What is the body region involved in your surgical history? (Text) (66e06f44973e7e3e485f6d1a)
-            48. What type of surgery have you undergone? (Text) (na)
-            49. When did you have surgery? (Text) (na)
             50. Do you deny taking medications? (Yes/No/NA) (66dfcd174bef40d7e6577070)
             51. Have your medications been scanned into the file? (Yes/No/NA) (66dfcd2b4bef40d7e6577072)
             52. Have you reviewed your current medications, including name, dosage, frequency, and route? (Yes/No) (66dfcd3a4bef40d7e6577074)
             53. What is the name of the medication you are currently taking? (Text) (66e07216973e7e3e485f6d2a)
-            54. What is the dosage and frequency of your medication intake? (Text) (na)
-            55. What is the route of administration for your medication? (Text) (na)
-            56. What is the reason for you taking your medication? (Text) (na)
 
-            <|eot_id|><|start_header_id|>user<|end_header_id|> Here is the retrieved document: \n\n{""" + query + """}\n\n
+            <|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{""" + query + """}\n\n
             <|eot_id|><|start_header_id|>assistant<|end_header_id|>
     """
     
-    messages = extractionPrompt
+    
+    messages = extractionPrompt1
     
     response = llm.invoke(messages)
-    if hasattr(response, 'content') and response.content:
-        return response.content
-    else:
-        return ""
+    
+    messages2 = extractionPrompt2
+        
+    response2 = llm.invoke(messages2)
+    
+    finalResponse = response.content + " \n break \n " + response2.content
+    
+    # if hasattr(response, 'content') and response.content:
+    return stringToJson(finalResponse)
+    # else:
+    #     return ""

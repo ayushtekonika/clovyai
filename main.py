@@ -66,6 +66,7 @@ async def getEntity(query_model: entityModel):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Include the router in the FastAPI app
 app.include_router(router)
 # add router prefix api/v1
 

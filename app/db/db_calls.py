@@ -17,7 +17,6 @@ async def add_patient_summary(patientID, summary, db_connection):
 
         # Close the cursor and connection
         cursor.close()
-        db_connection.close()
 
         return {"message": "Patient summary added successfully."}
 
@@ -37,7 +36,7 @@ async def get_patient_summary(patientID, db_connection):
         result = cursor.fetchone()
 
         cursor.close()
-
+        
         if result:
             return result["summary"]
         else:
