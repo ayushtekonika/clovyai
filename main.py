@@ -66,11 +66,10 @@ async def getEntity(query_model: entityModel):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Include the router in the FastAPI app
 app.include_router(router)
 # add router prefix api/v1
 
 # to run it locally
-if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+# if __name__ == '__main__':
+#     import uvicorn
+#     uvicorn.run(app, host='0.0.0.0', port=8000)
