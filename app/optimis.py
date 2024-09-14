@@ -2,13 +2,23 @@ from langchain_groq import ChatGroq
 import os
 import json
 from dotenv import load_dotenv
+from langchain.embeddings import JinaEmbeddings
+from langchain import hub
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+from langchain_community.document_loaders import TextLoader
+from langchain.vectorstores import Chroma
 
 load_dotenv()
 
 groq_key = os.getenv("GROQ_API_KEY")
+os.environ['LANGCHAIN_TRACING_V2'] = 'true'
+os.environ['LANGCHAIN_ENDPOINT'] = os.getenv("LANGCHAIN_ENDPOINT")
+os.environ['LANGCHAIN_API_KEY'] = os.getenv("LANGCHAIN_API_KEY")
+os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
 
 if groq_key is None:
-    print(groq_key, "groq")
     os.environ["GROQ_API_KEY"] = groq_key
 
 llm = ChatGroq(
@@ -152,3 +162,66 @@ def extract_entity(query: str):
     return stringToJson(finalResponse)
     # else:
     #     return ""
+
+
+class VECTOR_CREATION:
+    def __init__(self):
+        self.chunk_size=500 
+        self.chunk_overlap=200
+        
+    def vectorCreation(self, doc):
+
+        loader = TextLoader(doc)
+        loader.load()
+
+        # loader = UnstructuredTextLoader('output.txt')
+        data = loader.load()
+
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=200)
+        splits = text_splitter.split_documents(data)
+
+        embeddings = JinaEmbeddings(
+            jina_auth_token=os.getenv("JINA_TOKEN"), model_name='jina-embeddings-v2-base-en'
+        )
+
+        vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
+        
+        return vectorstore
+
+class RETRIEVER_LLM:
+    def __init__(self):
+        self.model = llm
+    def retrieverLLM(self, vectorstore):
+        
+        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 6})
+
+        prompt = hub.pull("rlm/rag-prompt") + """Focus on the body part and the problems/description provided in the question. \n 
+        1. Always provide the ICD10 code, \n
+        2. Provide multiple ICD10 codes.\n"""
+
+        def format_docs(docs):
+            return "\n\n".join(doc.page_content for doc in docs)
+
+
+        rag_chain = (
+            {"context": retriever | format_docs, "question": RunnablePassthrough()}
+            | prompt
+            | self.model
+            | StrOutputParser()
+        )
+
+        return rag_chain
+    
+    def response(self, rag_chain, query):
+        response = rag_chain.invoke(query)
+        return response
+    
+ 
+def icd10(query: str):
+    vector_creator = VECTOR_CREATION()  # Renamed instance
+    vectorstore = vector_creator.vectorCreation("output2.txt")
+    retriever_llm = RETRIEVER_LLM()  # Renamed instance
+    rag_chain = retriever_llm.retrieverLLM(vectorstore)
+    response = retriever_llm.response(rag_chain, query)
+    print(response)
+    return response
