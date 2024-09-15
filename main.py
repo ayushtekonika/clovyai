@@ -75,16 +75,7 @@ async def getICD10(query_model: entityModel):
 
     try:
         
-        # summary = await get_patient_summary(patientID, db.db_connection)
-        summary = """1. i do not feel good. **Chief Complaint:** Paul, a 74-year-old patient, woke up with no mobility in his right shoulder, 
-            with no prior injury or specific cause.2. **Symptoms:** Paul experiences stiffness, pain, and limited range of motion 
-            in his right shoulder, with pain shooting down to the elbow.3. **Activities:** Paul recently tried throwing a football 
-            with his grandson and experienced some soreness, but it was not severe.4. **Sleeping Position:** Paul is a side sleeper 
-            and did not notice any unusual sleeping position.5. **Medical History:** Paul has anxiety, depression, and a peanut 
-            allergy.6. **Physical Examination:** Paul's shoulder mobility is severely limited, with:* Limited external rotation 
-            (20 degrees)* Weak internal rotation (2+)* Limited abduction (75 degrees)* Limited external rotation strength 
-            (1)* Limited internal rotation strength.
-            """
+        summary = await get_patient_summary(patientID, db.db_connection)
         response = icd10(summary)
         return {"response": response}
     except Exception as e:
@@ -95,6 +86,6 @@ app.include_router(router)
 # add router prefix api/v1
 
 # to run it locally
-if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=8000)
+# if __name__ == '__main__':
+#     import uvicorn
+#     uvicorn.run(app, host='0.0.0.0', port=8000)

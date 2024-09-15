@@ -216,12 +216,12 @@ class RETRIEVER_LLM:
         response = rag_chain.invoke(query)
         return response
     
+vector_creator = VECTOR_CREATION()  # Renamed instance
+vectorstore = vector_creator.vectorCreation("output2.txt")
+retriever_llm = RETRIEVER_LLM()  # Renamed instance
+rag_chain = retriever_llm.retrieverLLM(vectorstore)
  
 def icd10(query: str):
-    vector_creator = VECTOR_CREATION()  # Renamed instance
-    vectorstore = vector_creator.vectorCreation("output2.txt")
-    retriever_llm = RETRIEVER_LLM()  # Renamed instance
-    rag_chain = retriever_llm.retrieverLLM(vectorstore)
     response = retriever_llm.response(rag_chain, query)
     print(response)
     return response
