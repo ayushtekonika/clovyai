@@ -9,14 +9,16 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_community.document_loaders import TextLoader
 from langchain.vectorstores import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+
 
 load_dotenv()
 
 groq_key = os.getenv("GROQ_API_KEY")
-os.environ['LANGCHAIN_TRACING_V2'] = 'true'
-os.environ['LANGCHAIN_ENDPOINT'] = os.getenv("LANGCHAIN_ENDPOINT")
-os.environ['LANGCHAIN_API_KEY'] = os.getenv("LANGCHAIN_API_KEY")
-os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
+# os.environ['LANGCHAIN_TRACING_V2'] = 'true'
+# os.environ['LANGCHAIN_ENDPOINT'] = os.getenv("LANGCHAIN_ENDPOINT")
+# os.environ['LANGCHAIN_API_KEY'] = os.getenv("LANGCHAIN_API_KEY")
+# os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
 
 if groq_key is None:
     os.environ["GROQ_API_KEY"] = groq_key
@@ -177,13 +179,15 @@ class VECTOR_CREATION:
         # loader = UnstructuredTextLoader('output.txt')
         data = loader.load()
 
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=200)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
         splits = text_splitter.split_documents(data)
 
-        embeddings = JinaEmbeddings(
-            jina_auth_token=os.getenv("JINA_TOKEN"), model_name='jina-embeddings-v2-base-en'
-        )
-
+        # embeddings = JinaEmbeddings(
+        #     jina_auth_token='jina_15520dc13bb84171854a95f2108a76abCgsuwjqyX2SrXgjLpOpdCPzfhees', model_name='jina-embeddings-v2-base-en'
+        # )
+        
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        
         vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
         
         return vectorstore
