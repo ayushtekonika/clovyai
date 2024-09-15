@@ -217,11 +217,75 @@ class RETRIEVER_LLM:
         return response
     
 vector_creator = VECTOR_CREATION()  # Renamed instance
-vectorstore = vector_creator.vectorCreation("output2.txt")
+vectorstore = vector_creator.vectorCreation("icd10.txt")
 retriever_llm = RETRIEVER_LLM()  # Renamed instance
 rag_chain = retriever_llm.retrieverLLM(vectorstore)
  
 def icd10(query: str):
     response = retriever_llm.response(rag_chain, query)
-    print(response)
     return response
+    return ""
+
+def getTopPatter(query:str):
+
+    # Convert string to list of dictionaries (array of objects)
+    data_list = json.loads(query)
+
+    # Sort by percentage in descending order
+    sorted_data = sorted(data_list, key=lambda x: x['percentage'], reverse=True)
+
+    # Select the top item
+    top_one = sorted_data[:1]
+
+    # Output the result
+    return top_one
+
+
+def patterns(query: str):
+    prompt = """
+    <|begin_of_text|><|start_header_id|>system<|end_header_id|> 
+        Given the following patterns and associated tests,
+        evaluate each pattern type's suitability (on a scale of 0-100%) based on its relevance to diagnosing or assessing the specified condition.
+        The input is structured in the format of "pattern": ["tests"].
+        For each issue, rate each pattern type based on how well it addresses the issue criteria in the provided user document summary, considering factors like reliability, relevance, and specificity to the condition.
+        Give response in Array[{"pattern": <pattern-name>, "percentage" : <percentage>}], don't provide any other information.
+
+        Pattern and Test Types:
+
+        Pattern: Shoulder Adhesive Capsulitis / Mobility Deficits:
+        tests:
+        Stiffness reported - shoulder region (gradual onset)
+        Passive movement tests (shoulder)
+        Active movement tests (shoulder)
+        Accessory movement tests (shoulder)
+        
+        Pattern: Shoulder Instability / Coordination Impairments:
+        tests:
+        Onset mechanism - shoulder dislocation/subluxations
+        Special tests - shoulder labral tests
+        Special tests - shoulder instability tests
+        Ligament integrity tests (shoulder)
+        
+        Pattern: Thoracic Outlet Syndrome / Shoulder and Arm Radiating Pain:
+        tests:
+        Paresthesia - upper limb
+        Nerve tension tests (upper limb)
+        Aggravating factors - limb positions that involve nerve tension
+        Palpation - upper quarter nerve entrapment site (provocation reproduces symptoms)
+        Neurological status (upper quarter)
+        
+        Pattern: Rotator Cuff Syndrome / Muscle Power Deficits:
+        tests:
+        Observation - arc of movement pain with shoulder motions
+        Resistive tests (rotator cuff)
+        Aggravating factors - repetitive overhead activity
+        Special tests - shoulder impingement tests
+        Palpation - rotator cuff (provocation reproduces symptoms)
+        
+        Task: For each issue criteria, rate only the corresponding pattern types in percentage (%), where 100% indicates the pattern is highly suitable for diagnosing/assessing the issue, and 0% indicates it is not suitable.Give response in Array[{"pattern": <pattern-name>, "percentage" : <percentage>}], don't provide any other information.
+        <|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{""" + query + """}\n\n
+        <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+    """
+    
+    response = llm.invoke(prompt)
+    return getTopPatter(response.content)
