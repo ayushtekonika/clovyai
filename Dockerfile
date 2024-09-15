@@ -1,6 +1,6 @@
 
 # Use Python base image
-FROM python:3.10.12-bullseye
+FROM python:3.10-bookworm
 
 # Install necessary packages and update SQLite to version >= 3.35.0
 RUN apt-get update && apt-get install -y wget build-essential libsqlite3-dev \
