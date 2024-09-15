@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from app.optimis import get_summary, extract_entity
+from app.optimis import get_summary, extract_entity, icd10, patterns
 from app.db import db
 from app.db.db_calls import add_patient_summary, get_patient_summary
 
@@ -62,6 +62,36 @@ async def getEntity(query_model: entityModel):
         
         summary = await get_patient_summary(patientID, db.db_connection)
         response = extract_entity(summary)
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.post("/get_icd10")
+async def getICD10(query_model: entityModel):
+    patientID = query_model.patientID
+
+    if not patientID:
+        raise HTTPException(status_code=400, detail="Missing 'patientID' in request body")
+
+    try:
+        
+        summary = await get_patient_summary(patientID, db.db_connection)
+        response = icd10(summary)
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.post("/get_patterns")
+async def getPatterns(query_model: entityModel):
+    patientID = query_model.patientID
+
+    if not patientID:
+        raise HTTPException(status_code=400, detail="Missing 'patientID' in request body")
+
+    try:
+        
+        summary = await get_patient_summary(patientID, db.db_connection)
+        response = patterns(summary)
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

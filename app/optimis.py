@@ -2,13 +2,25 @@ from langchain_groq import ChatGroq
 import os
 import json
 from dotenv import load_dotenv
+from langchain.embeddings import JinaEmbeddings
+from langchain import hub
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+from langchain_community.document_loaders import TextLoader
+from langchain.vectorstores import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+
 
 load_dotenv()
 
 groq_key = os.getenv("GROQ_API_KEY")
+# os.environ['LANGCHAIN_TRACING_V2'] = 'true'
+# os.environ['LANGCHAIN_ENDPOINT'] = os.getenv("LANGCHAIN_ENDPOINT")
+# os.environ['LANGCHAIN_API_KEY'] = os.getenv("LANGCHAIN_API_KEY")
+# os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
 
 if groq_key is None:
-    print(groq_key, "groq")
     os.environ["GROQ_API_KEY"] = groq_key
 
 llm = ChatGroq(
@@ -65,7 +77,6 @@ def stringToJson(entity: str):
     # json_string = json.dumps(json_data, indent=4)
 
     # Print the JSON string
-    print(type(json_data))
     return json_data
     
 def extract_entity(query: str):
@@ -152,3 +163,132 @@ def extract_entity(query: str):
     return stringToJson(finalResponse)
     # else:
     #     return ""
+
+
+class VECTOR_CREATION:
+    def __init__(self):
+        self.chunk_size=500 
+        self.chunk_overlap=200
+        
+    def vectorCreation(self, doc):
+
+        loader = TextLoader(doc)
+        loader.load()
+
+        # loader = UnstructuredTextLoader('output.txt')
+        data = loader.load()
+
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
+        splits = text_splitter.split_documents(data)
+
+        # embeddings = JinaEmbeddings(
+        #     jina_auth_token='jina_15520dc13bb84171854a95f2108a76abCgsuwjqyX2SrXgjLpOpdCPzfhees', model_name='jina-embeddings-v2-base-en'
+        # )
+        
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        
+        vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
+        
+        return vectorstore
+
+class RETRIEVER_LLM:
+    def __init__(self):
+        self.model = llm
+    def retrieverLLM(self, vectorstore):
+        
+        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 6})
+
+        prompt = hub.pull("rlm/rag-prompt") + """Focus on the body part and the problems/description provided in the question. \n 
+        1. Always provide the ICD10 code, \n
+        2. Provide multiple ICD10 codes.\n
+        3. Provide response in array of objects <code: <icd10 code>, description: <icd10 code description>> and don't send anything else and use double quotes for string\n"""
+
+        def format_docs(docs):
+            return "\n\n".join(doc.page_content for doc in docs)
+
+
+        rag_chain = (
+            {"context": retriever | format_docs, "question": RunnablePassthrough()}
+            | prompt
+            | self.model
+            | StrOutputParser()
+        )
+
+        return rag_chain
+    
+    def response(self, rag_chain, query):
+        response = rag_chain.invoke(query)
+        return response
+    
+vector_creator = VECTOR_CREATION()  # Renamed instance
+vectorstore = vector_creator.vectorCreation("icd10.txt")
+retriever_llm = RETRIEVER_LLM()  # Renamed instance
+rag_chain = retriever_llm.retrieverLLM(vectorstore)
+ 
+def icd10(query: str):
+    response = retriever_llm.response(rag_chain, query)
+    return json.loads(response)
+
+def getTopPatter(query:str):
+
+    # Convert string to list of dictionaries (array of objects)
+    data_list = json.loads(query)
+
+    # Sort by percentage in descending order
+    sorted_data = sorted(data_list, key=lambda x: x['percentage'], reverse=True)
+
+    # Select the top item
+    top_one = sorted_data[:1]
+
+    # Output the result
+    return top_one
+
+
+def patterns(query: str):
+    prompt = """
+    <|begin_of_text|><|start_header_id|>system<|end_header_id|> 
+        Given the following patterns and associated tests,
+        evaluate each pattern type's suitability (on a scale of 0-100%) based on its relevance to diagnosing or assessing the specified condition.
+        The input is structured in the format of "pattern": ["tests"].
+        For each issue, rate each pattern type based on how well it addresses the issue criteria in the provided user document summary, considering factors like reliability, relevance, and specificity to the condition.
+        Give response in Array[{"pattern": <pattern-name>, "percentage" : <percentage>}], don't provide any other information.
+
+        Pattern and Test Types:
+
+        Pattern: Shoulder Adhesive Capsulitis / Mobility Deficits:
+        tests:
+        Stiffness reported - shoulder region (gradual onset)
+        Passive movement tests (shoulder)
+        Active movement tests (shoulder)
+        Accessory movement tests (shoulder)
+        
+        Pattern: Shoulder Instability / Coordination Impairments:
+        tests:
+        Onset mechanism - shoulder dislocation/subluxations
+        Special tests - shoulder labral tests
+        Special tests - shoulder instability tests
+        Ligament integrity tests (shoulder)
+        
+        Pattern: Thoracic Outlet Syndrome / Shoulder and Arm Radiating Pain:
+        tests:
+        Paresthesia - upper limb
+        Nerve tension tests (upper limb)
+        Aggravating factors - limb positions that involve nerve tension
+        Palpation - upper quarter nerve entrapment site (provocation reproduces symptoms)
+        Neurological status (upper quarter)
+        
+        Pattern: Rotator Cuff Syndrome / Muscle Power Deficits:
+        tests:
+        Observation - arc of movement pain with shoulder motions
+        Resistive tests (rotator cuff)
+        Aggravating factors - repetitive overhead activity
+        Special tests - shoulder impingement tests
+        Palpation - rotator cuff (provocation reproduces symptoms)
+        
+        Task: For each issue criteria, rate only the corresponding pattern types in percentage (%), where 100% indicates the pattern is highly suitable for diagnosing/assessing the issue, and 0% indicates it is not suitable.Give response in Array[{"pattern": <pattern-name>, "percentage" : <percentage>}], don't provide any other information.
+        <|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{""" + query + """}\n\n
+        <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+    """
+    
+    response = llm.invoke(prompt)
+    return getTopPatter(response.content)
