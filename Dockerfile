@@ -1,32 +1,20 @@
-
-# Use Python base image
 FROM python:3.10-bookworm
 
-# Install necessary packages and update SQLite to version >= 3.35.0
-RUN apt-get update && apt-get install -y wget build-essential libsqlite3-dev \
-    && wget https://www.sqlite.org/2023/sqlite-autoconf-3430100.tar.gz \
-    && tar -xzf sqlite-autoconf-3430100.tar.gz \
-    && cd sqlite-autoconf-3430100 \
-    && ./configure --prefix=/usr/local \
-    && make && make install \
-    && cd .. && rm -rf sqlite-autoconf-3430100 sqlite-autoconf-3430100.tar.gz \
-    && apt-get remove --purge -y wget build-essential \
-    && apt-get clean
-
-# Verify the correct SQLite version
-RUN sqlite3 --version
-
-# Set working directory
 WORKDIR /code
 
-# Copy the application code
 COPY . /code/
 
-# Copy requirements file
+ENV PATH="/code:$PATH"
+
 COPY ./requirements.txt ./
 
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN apt-get -y update \
+    && apt-get -y install --no-install-recommends \
+       curl \
+    && pip3 install --no-cache --upgrade pip setuptools \
+    && pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY . .
 
-# Start the application
+COPY bin/* /code/bin/
+
 CMD ["bash", "bin/start.sh"]
