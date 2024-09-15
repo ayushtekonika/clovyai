@@ -2,15 +2,13 @@ from langchain_groq import ChatGroq
 import os
 import json
 from dotenv import load_dotenv
-from langchain.embeddings import JinaEmbeddings
 from langchain import hub
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_community.document_loaders import TextLoader
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
-
 
 load_dotenv()
 
