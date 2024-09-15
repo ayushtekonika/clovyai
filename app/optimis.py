@@ -227,7 +227,7 @@ def icd10(query: str):
     response = retriever_llm.response(rag_chain, query)
     return json.loads(response)
 
-def getTopPatter(query:str):
+def getTopPattern(query:str):
 
     # Convert string to list of dictionaries (array of objects)
     data_list = json.loads(query)
@@ -289,4 +289,4 @@ def patterns(query: str):
     """
     
     response = llm.invoke(prompt)
-    return getTopPatter(response.content)
+    return getTopPattern(response.content)
