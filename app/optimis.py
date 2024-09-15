@@ -77,7 +77,6 @@ def stringToJson(entity: str):
     # json_string = json.dumps(json_data, indent=4)
 
     # Print the JSON string
-    print(type(json_data))
     return json_data
     
 def extract_entity(query: str):
@@ -201,7 +200,8 @@ class RETRIEVER_LLM:
 
         prompt = hub.pull("rlm/rag-prompt") + """Focus on the body part and the problems/description provided in the question. \n 
         1. Always provide the ICD10 code, \n
-        2. Provide multiple ICD10 codes.\n"""
+        2. Provide multiple ICD10 codes.\n
+        3. Provide response in array of objects <code: <icd10 code>, description: <icd10 code description>> and don't send anything else and use double quotes for string\n"""
 
         def format_docs(docs):
             return "\n\n".join(doc.page_content for doc in docs)
@@ -227,8 +227,7 @@ rag_chain = retriever_llm.retrieverLLM(vectorstore)
  
 def icd10(query: str):
     response = retriever_llm.response(rag_chain, query)
-    return response
-    return ""
+    return json.loads(response)
 
 def getTopPatter(query:str):
 
