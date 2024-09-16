@@ -33,7 +33,7 @@ llm = ChatGroq(
 def get_summary(query: str) -> str:
     
     summaryPrompt = """
-        <|begin_of_text|><|start_header_id|>system<|end_header_id|>You are a medical expert AI agent summarizer. Summarize the patient's query in key points, providing a concise and reliable summary in an easy-to-understand format. Except for the result don't write anything else just the points
+        <|begin_of_text|><|start_header_id|>system<|end_header_id|>You are a medical expert AI agent summarizer. Summarize the patient's query in key points, providing a concise and reliable summary in an easy-to-understand format. Except for the result don't write anything else just the points not even introduction line
         <|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{""" + query + """}\n\n
         <|eot_id|><|start_header_id|>assistant<|end_header_id|>
     """
