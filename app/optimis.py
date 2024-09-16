@@ -18,7 +18,7 @@ groq_key = os.getenv("GROQ_API_KEY")
 # os.environ['LANGCHAIN_API_KEY'] = os.getenv("LANGCHAIN_API_KEY")
 # os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
 
-if groq_key is None:
+if groq_key:
     os.environ["GROQ_API_KEY"] = groq_key
 
 llm = ChatGroq(
