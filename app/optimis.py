@@ -18,7 +18,7 @@ groq_key = os.getenv("GROQ_API_KEY")
 # os.environ['LANGCHAIN_API_KEY'] = os.getenv("LANGCHAIN_API_KEY")
 # os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT")
 
-if groq_key is None:
+if groq_key:
     os.environ["GROQ_API_KEY"] = groq_key
 
 llm = ChatGroq(
@@ -32,13 +32,11 @@ llm = ChatGroq(
 
 def get_summary(query: str) -> str:
     
-    summaryPrompt = [
-    (
-        "system",
-        "The human query that is provided is a conversation between a medical expert and a patient. so You are a medical expert AI agent summarizer equipped with comprehensive knowledge. Your primary function is to summarize the patient's query by providing accurate summary. Your responses are concise, reliable, and presented in an easy-to-understand format. Make sure the response is in key points",
-    ),
-    ("human", query)
-    ]
+    summaryPrompt = """
+        <|begin_of_text|><|start_header_id|>system<|end_header_id|>You are a medical expert AI agent summarizer. Summarize the patient's query in key points, providing a concise and reliable summary in an easy-to-understand format. Except for the result don't write anything else just the points
+        <|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{""" + query + """}\n\n
+        <|eot_id|><|start_header_id|>assistant<|end_header_id|>
+    """
 
     messages = summaryPrompt
     
@@ -80,7 +78,7 @@ def stringToJson(entity: str):
 def extract_entity(query: str):
     
     extractionPrompt1 = """<|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a grader assessing relevance of a retrieved document to a user's medical questionnaire. Your task is to extract information from the document and answer the user's questions based on the provided response options. For Yes/No questions, select one of the given options based on the document. For questions with no provided options, extract the relevant information from the document. \n
-            Provide the answers in just a json array format with answer being a object { question: question that is mentioned, id: id mentioned beside question, answer: answer of the question }. If the document does not contain information relevant to a particular question, return "NA" as the answer. \n
+            Provide the answers in just a json array format with answer being a object { question: question that is mentioned, id: id mentioned beside question, answer: answer of the question }. If the document does not contain information relevant to a particular question, return "NA" as the answer. Except for the result don't write anything else \n
             Here's the user's questionnaire: \n
             1. Do you have allergies? (Yes/No) (66dfc96f4bef40d7e657705b)
             2. Do you have anemia? (Yes/No) (66dfc9804bef40d7e657705d)
@@ -115,7 +113,7 @@ def extract_entity(query: str):
     """
     extractionPrompt2 = """
     <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a grader assessing relevance of a retrieved document to a user's medical questionnaire. Your task is to extract information from the document and answer the user's questions based on the provided response options. For Yes/No questions, select one of the given options based on the document. For questions with no provided options, extract the relevant information from the document. \n
-            Provide the answers in just a json array format with answer being a object { question: question that is mentioned, id: id mentioned beside question, answer: answer of the question }. If the document does not contain information relevant to a particular question, return "NA" as the answer. \n
+            Provide the answers in just a json array format with answer being a object { question: question that is mentioned, id: id mentioned beside question, answer: answer of the question }. If the document does not contain information relevant to a particular question, return "NA" as the answer. Except for the result don't write anything else \n
             Here's the user's questionnaire: \n
             28. Do you have kidney problems? (Yes/No) (66e11f97c5ebd1848543110c)
             29. Do you have any metal implants? (Yes/No) (66e13affc5ebd1848543110e)
@@ -154,7 +152,7 @@ def extract_entity(query: str):
     messages2 = extractionPrompt2
         
     response2 = llm.invoke(messages2)
-    
+
     finalResponse = response.content + " \n break \n " + response2.content
     
     # if hasattr(response, 'content') and response.content:
