@@ -9,6 +9,7 @@ async def add_patient_summary(patientID, summary, db_connection):
         insert_query = """
         INSERT INTO patient_summary (patientID, summary)
         VALUES (%s, %s)
+        ON DUPLICATE KEY UPDATE summary = VALUES(summary)
         """
         cursor.execute(insert_query, (patientID, summary))
 
