@@ -14,6 +14,7 @@ from langchain.embeddings import JinaEmbeddings
 load_dotenv()
 
 groq_key = os.getenv("GROQ_API_KEY")
+jina_key = os.getenv("JINA_API_KEY")
 # os.environ['LANGCHAIN_TRACING_V2'] = 'true'
 # os.environ['LANGCHAIN_ENDPOINT'] = os.getenv("LANGCHAIN_ENDPOINT")
 # os.environ['LANGCHAIN_API_KEY'] = os.getenv("LANGCHAIN_API_KEY")
@@ -21,6 +22,9 @@ groq_key = os.getenv("GROQ_API_KEY")
 
 if groq_key:
     os.environ["GROQ_API_KEY"] = groq_key
+
+if jina_key:
+    os.environ["JINA_API_KEY"] = jina_key
 
 llm = ChatGroq(
     model="llama-3.1-8b-instant",
@@ -199,7 +203,7 @@ class VECTOR_CREATION:
         splits = text_splitter.split_documents(data)
 
         embeddings = JinaEmbeddings(
-            jina_auth_token=os.environ["JINA_API_KEY"], model_name='jina-embeddings-v2-base-en'
+            jina_auth_token=jina_key, model_name='jina-embeddings-v2-base-en'
         )
         
         # embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
