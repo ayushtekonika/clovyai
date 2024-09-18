@@ -8,7 +8,8 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_community.document_loaders import TextLoader
 from langchain_community.vectorstores import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
+# from langchain_huggingface import HuggingFaceEmbeddings
+from langchain.embeddings import JinaEmbeddings
 
 load_dotenv()
 
@@ -51,7 +52,7 @@ def stringToJson(entity: str):
     data = entity
 
     # Remove the "break" statement and split the data into two parts
-    data_parts = data.replace("break", "").split("[")
+    data_parts = data.replace("----break----", "").split("[")
     data_parts = [part.strip() for part in data_parts if part.strip()]
 
     # Initialize an empty list to store the JSON data
@@ -153,7 +154,7 @@ def extract_entity(query: str):
         
     response2 = llm.invoke(messages2)
 
-    finalResponse = response.content + " \n break \n " + response2.content
+    finalResponse = response.content + " \n ----break---- \n " + response2.content
     
     # if hasattr(response, 'content') and response.content:
     return stringToJson(finalResponse)
@@ -174,14 +175,14 @@ class VECTOR_CREATION:
         # loader = UnstructuredTextLoader('output.txt')
         data = loader.load()
 
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=100, chunk_overlap=20)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=80)
         splits = text_splitter.split_documents(data)
 
-        # embeddings = JinaEmbeddings(
-        #     jina_auth_token='jina_15520dc13bb84171854a95f2108a76abCgsuwjqyX2SrXgjLpOpdCPzfhees', model_name='jina-embeddings-v2-base-en'
-        # )
+        embeddings = JinaEmbeddings(
+            jina_auth_token=os.getenv("JINA_API_KEY"), model_name='jina-embeddings-v2-base-en'
+        )
         
-        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        # embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
         
         vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
         
