@@ -199,7 +199,7 @@ class VECTOR_CREATION:
         splits = text_splitter.split_documents(data)
 
         embeddings = JinaEmbeddings(
-            jina_auth_token=os.getenv("JINA_API_KEY"), model_name='jina-embeddings-v2-base-en'
+            jina_auth_token=os.environ["JINA_API_KEY"], model_name='jina-embeddings-v2-base-en'
         )
         
         # embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
