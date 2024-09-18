@@ -34,7 +34,27 @@ llm = ChatGroq(
 def get_summary(query: str) -> str:
     
     summaryPrompt = """
-        <|begin_of_text|><|start_header_id|>system<|end_header_id|>You are a medical expert AI agent summarizer. Summarize the patient's query in key points, providing a concise and reliable summary in an easy-to-understand format. Except for the result don't write anything else just the points not even introduction line
+        <|begin_of_text|><|start_header_id|>system<|end_header_id|>You are a medical expert AI agent using the LLAMA model. Your task is to summarize the patient's query in key points, providing a concise, reliable summary that is easy to understand. Output only the key points—no introduction, explanation, or extra commentary.
+
+        Example 1:
+        Query: I’ve been experiencing headaches for the past week, especially after using my computer for long hours. It’s usually a dull ache around my forehead and sometimes spreads to my temples. I tried taking painkillers, but they don’t seem to help much. I also noticed my eyes feel strained, and the room sometimes feels too bright.
+
+        Summary:
+
+        Headaches for the past week
+        Worse after extended computer use
+        Dull ache around forehead, sometimes spreading to temples
+        Painkillers not effective
+        Reports eye strain and light sensitivity
+        Example 2:
+        Query: Lately, I’ve been feeling fatigued, even after a full night's sleep. I don’t seem to have the energy I used to, and I’ve noticed that I get short of breath when walking up stairs. I also experienced some mild chest discomfort once or twice but didn’t think much of it.
+
+        Summary:
+
+        Fatigue despite full night's sleep
+        Low energy levels
+        Shortness of breath when climbing stairs
+        Mild chest discomfort a few times
         <|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{""" + query + """}\n\n
         <|eot_id|><|start_header_id|>assistant<|end_header_id|>
     """
