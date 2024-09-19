@@ -1,5 +1,3 @@
-# # Configure logging
-# logging.basicConfig(level=logging.DEBUG)
 from fastapi import FastAPI, HTTPException
 from fastapi import APIRouter
 from contextlib import asynccontextmanager
@@ -10,6 +8,8 @@ from app.optimis import get_summary, extract_entity, icd10, patterns
 from app.db import db
 from app.db.db_calls import add_patient_summary, get_patient_summary
 
+load_dotenv()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Initializing Optimis instance")
@@ -19,7 +19,6 @@ async def lifespan(app: FastAPI):
     db.close_connection()
     
 # Load environment variables
-load_dotenv()
 app = FastAPI(lifespan=lifespan)
 router = APIRouter(prefix="/api/v1")
     
