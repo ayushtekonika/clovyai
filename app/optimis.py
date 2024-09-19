@@ -9,7 +9,7 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_community.document_loaders import TextLoader
 from langchain_community.vectorstores import Chroma
 # from langchain_huggingface import HuggingFaceEmbeddings
-from langchain.embeddings import JinaEmbeddings
+from langchain_community.embeddings import JinaEmbeddings
 
 load_dotenv()
 
