@@ -45,7 +45,7 @@ async def summary(query_model: QueryModel):
 
     try:
         response = get_summary(query)
-        await add_patient_summary(query_model.patientID, response, db.db_connection)
+        await add_patient_summary(query_model.patientID, response, query, db.db_connection)
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
