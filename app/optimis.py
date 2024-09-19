@@ -177,9 +177,10 @@ def extract_entity(query: str):
 
 
 class VECTOR_CREATION:
-    def __init__(self):
+    def __init__(self, jina_key):
         self.chunk_size=500 
         self.chunk_overlap=200
+        self.jina_key=jina_key
         
     def vectorCreation(self, doc):
 
@@ -193,7 +194,7 @@ class VECTOR_CREATION:
         splits = text_splitter.split_documents(data)
 
         embeddings = JinaEmbeddings(
-            jina_auth_token="jina_ee35ec59fede4457832af3a2fffbacaazLpsBj-lgE8SpfBkChq0DDZkyyuB", model_name='jina-embeddings-v2-base-en'
+            jina_auth_token=self.jina_key, model_name='jina-embeddings-v2-base-en'
         )
         
         # embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
@@ -231,7 +232,7 @@ class RETRIEVER_LLM:
         response = rag_chain.invoke(query)
         return response
     
-vector_creator = VECTOR_CREATION()  # Renamed instance
+vector_creator = VECTOR_CREATION(jina_key)  # Renamed instance
 vectorstore = vector_creator.vectorCreation("icd10.txt")
 retriever_llm = RETRIEVER_LLM()  # Renamed instance
 rag_chain = retriever_llm.retrieverLLM(vectorstore)
