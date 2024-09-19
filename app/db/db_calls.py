@@ -1,17 +1,17 @@
 import mysql.connector
 from fastapi import HTTPException
 
-async def add_patient_summary(patientID, summary, db_connection):
+async def add_patient_summary(patientID, summary, transcription, db_connection):
     try:
         cursor = db_connection.cursor()
 
         # SQL query to insert the record
         insert_query = """
-        INSERT INTO patient_summary (patientID, summary)
-        VALUES (%s, %s)
-        ON DUPLICATE KEY UPDATE summary = VALUES(summary)
+        INSERT INTO patient_summary (patientID, summary, transcription)
+        VALUES (%s, %s, %s)
+        ON DUPLICATE KEY UPDATE summary = VALUES(summary), transcription = VALUES(transcription);
         """
-        cursor.execute(insert_query, (patientID, summary))
+        cursor.execute(insert_query, (patientID, summary, transcription))
 
         # Commit the transaction
         db_connection.commit()
