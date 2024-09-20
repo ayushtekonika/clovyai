@@ -130,6 +130,7 @@ def extract_entity(query: str):
     <|begin_of_text|><|start_header_id|>system<|end_header_id|> You are a grader assessing relevance of a retrieved document to a user's medical questionnaire. Your task is to extract information from the document and answer the user's questions based on the provided response options. For Yes/No questions, select one of the given options based on the document. For questions with no provided options, extract the relevant information from the document. \n
             Provide the answers in just a json array format with answer being a object { question: question that is mentioned, id: id mentioned beside question, answer: answer of the question }. If the document does not contain information relevant to a particular question, return "NA" as the answer. Except for the result don't write anything else \n
             Here's the user's questionnaire: \n
+            0. What is the name of the medication you are currently taking? (Text) (66e07216973e7e3e485f6d2a)
             28. Do you have kidney problems? (Yes/No) (66e11f97c5ebd1848543110c)
             29. Do you have any metal implants? (Yes/No) (66e13affc5ebd1848543110e)
             30. Have you been diagnosed with MRSA? (Yes/No) (66e13b12c5ebd18485431110)
@@ -153,7 +154,6 @@ def extract_entity(query: str):
             50. Do you deny taking medications? (Yes/No/NA) (66dfcd174bef40d7e6577070)
             51. Have your medications been scanned into the file? (Yes/No/NA) (66dfcd2b4bef40d7e6577072)
             52. Have you reviewed your current medications, including name, dosage, frequency, and route? (Yes/No) (66dfcd3a4bef40d7e6577074)
-            53. What is the name of the medication you are currently taking? (Text) (66e07216973e7e3e485f6d2a)
 
             <|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{""" + query + """}\n\n
             <|eot_id|><|start_header_id|>assistant<|end_header_id|>
