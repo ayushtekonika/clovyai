@@ -32,7 +32,7 @@ class entityModel(BaseModel):
 # Define your routes here
 @router.get("/health")
 async def health():
-    return {"status": "all ok"}
+    return {"status": "ok"}
 
 @router.post("/summary")
 async def summary(query_model: QueryModel):
