@@ -1,0 +1,210 @@
+{
+    "questionSet1": {
+        "allergies": {
+            "question": "Do you have allergies?",
+            "id": "66dfc96f4bef40d7e657705b"
+        },
+        "anemia": {
+            "question": "Do you have anemia?",
+            "id": "66dfc9804bef40d7e657705d"
+        },
+        "anxiety": {
+            "question": "Do you experience anxiety?",
+            "id": "66dfc9954bef40d7e657705f"
+        },
+        "arthritis": {
+            "question": "Do you have arthritis?",
+            "id": "66e11bce848e9ed414b028cd"
+        },
+        "asthma": {
+            "question": "Do you have asthma?",
+            "id": "66e11bde848e9ed414b028cf"
+        },
+        "autoimmune_disorder": {
+            "question": "Do you have an autoimmune disorder?",
+            "id": "66e11c18c5ebd184854310e4"
+        },
+        "diagnosed_with_cancer": {
+            "question": "Have you been diagnosed with cancer?",
+            "id": "n66dfc9ed4bef40d7e6577061"
+        },
+        "cardiac_conditions": {
+            "question": "Do you have any cardiac conditions?",
+            "id": "66e11c34c5ebd184854310e6"
+        },
+        "cardiac_pacemaker": {
+            "question": "Do you have a cardiac pacemaker?",
+            "id": "66e11c64c5ebd184854310e8"
+        },
+        "chemical_dependency": {
+            "question": "Are you dealing with chemical dependency?",
+            "id": "66e11c78c5ebd184854310ea"
+        },
+        "circulation_problems": {
+            "question": "Do you have circulation problems?",
+            "id": "66e11c8bc5ebd184854310ec"
+        },
+        "diagnosed_with_covid19": {
+            "question": "Have you been diagnosed with COVID-19?",
+            "id": "66dfc9fa4bef40d7e6577063"
+        },
+        "currently_pregnant": {
+            "question": "Are you currently pregnant?",
+            "id": "66e11cadc5ebd184854310ee"
+        },
+        "suffer_from_depression": {
+            "question": "Do you suffer from depression?",
+            "id": "66e11d2fc5ebd184854310f0"
+        },
+        "diabetes": {
+            "question": "Do you have diabetes?",
+            "id": "66e11d40c5ebd184854310f2"
+        },
+        "dizzy_spells": {
+            "question": "Do you experience dizzy spells?",
+            "id": "66e11d67c5ebd184854310f4"
+        },
+        "emphysema_or_bronchitis": {
+            "question": "Do you have emphysema or bronchitis?",
+            "id": "66e11d8ac5ebd184854310f6"
+        },
+        "fibromyalgia": {
+            "question": "Do you have fibromyalgia?",
+            "id": "66e11d9ec5ebd184854310f8"
+        },
+        "fractures": {
+            "question": "Have you had any fractures?",
+            "id": "66e11db5c5ebd184854310fa"
+        },
+        "gallbladder_problems": {
+            "question": "Do you have gallbladder problems?",
+            "id": "66e11dc6c5ebd184854310fc"
+        },
+        "frequent_headaches": {
+            "question": "Do you experience frequent headaches?",
+            "id": "66e11dd6c5ebd184854310fe"
+        },
+        "hearing_impairment": {
+            "question": "Do you have hearing impairment?",
+            "id": "66e11e08c5ebd18485431100"
+        },
+        "diagnosed_with_hepatitis": {
+            "question": "Have you been diagnosed with hepatitis?",
+            "id": "66e11e27c5ebd18485431102"
+        },
+        "high_cholesterol": {
+            "question": "Do you have high cholesterol?",
+            "id": "66e11e3bc5ebd18485431104"
+        },
+        "high_or_low_blood_pressure": {
+            "question": "Do you have high or low blood pressure?",
+            "id": "66e11ebdc5ebd18485431106"
+        },
+        "diagnosed_with_hiv_aids": {
+            "question": "Have you been diagnosed with HIV/AIDS?",
+            "id": "66e11f24c5ebd18485431108"
+        },
+        "incontinence": {
+            "question": "Do you experience incontinence?",
+            "id": "66e11f6ac5ebd1848543110a"
+        }
+    },
+    "questionSet2": {
+        "kidney_problems": {
+            "question": "Do you have kidney problems?",
+            "id": "66e11f97c5ebd1848543110c"
+        },
+        "metal_implants": {
+            "question": "Do you have any metal implants?",
+            "id": "66e13affc5ebd1848543110e"
+        },
+        "diagnosed_with_mrsa": {
+            "question": "Have you been diagnosed with MRSA?",
+            "id": "66e13b12c5ebd18485431110"
+        },
+        "multiple_sclerosis": {
+            "question": "Do you have multiple sclerosis?",
+            "id": "66e13b3cc5ebd18485431112"
+        },
+        "muscular_disease": {
+            "question": "Do you have a muscular disease?",
+            "id": "66e13b6ac5ebd18485431114"
+        },
+        "diagnosed_with_osteoporosis": {
+            "question": "Have you been diagnosed with osteoporosis?",
+            "id": "66e13b81c5ebd18485431116"
+        },
+        "parkinsons_disease": {
+            "question": "Do you have Parkinson's disease?",
+            "id": "66e13b9cc5ebd18485431118"
+        },
+        "diagnosed_with_rheumatoid_arthritis": {
+            "question": "Have you been diagnosed with rheumatoid arthritis?",
+            "id": "66e13bbec5ebd1848543111a"
+        },
+        "history_of_seizures": {
+            "question": "Do you have a history of seizures?",
+            "id": "66e13bd5c5ebd1848543111c"
+        },
+        "smoker": {
+            "question": "Are you a smoker?",
+            "id": "66e13be8c5ebd1848543111e"
+        },
+        "speech_problems": {
+            "question": "Do you experience speech problems?",
+            "id": "66e13c18c5ebd18485431120"
+        },
+        "had_a_stroke": {
+            "question": "Have you had a stroke?",
+            "id": "66e13c32c5ebd18485431122"
+        },
+        "thyroid_disease": {
+            "question": "Do you have thyroid disease?",
+            "id": "66e13c52c5ebd18485431124"
+        },
+        "diagnosed_with_tuberculosis": {
+            "question": "Have you been diagnosed with tuberculosis?",
+            "id": "66e13c63c5ebd18485431126"
+        },
+        "vision_problems": {
+            "question": "Do you have vision problems?",
+            "id": "66e13c7bc5ebd18485431128"
+        },
+        "medical_precautions": {
+            "question": "Any Medical Precautions?",
+            "id": "66dfcaef4bef40d7e6577067"
+        },
+        "injured_from_fall_last_year": {
+            "question": "Have you been injured as a result of a fall in the past year?",
+            "id": "66dfcb774bef40d7e657706a"
+        },
+        "two_or_more_falls_last_year": {
+            "question": "Have you had two or more falls in the last year?",
+            "id": "66dfcb964bef40d7e657706c"
+        },
+        "risk_for_falls": {
+            "question": "Are you considered to be at risk for falls?",
+            "id": "66dfcbb24bef40d7e657706e"
+        },
+        "surgical_history_body_region": {
+            "question": "What is the body region involved in your surgical history?",
+            "id": "66e06f44973e7e3e485f6d1a"
+        },
+        "deny_taking_medications": {
+            "question": "Do you deny taking medications?",
+            "id": "66dfcd174bef40d7e6577070"
+        },
+        "medications_scanned_into_file": {
+            "question": "Have your medications been scanned into the file?",
+            "id": "66dfcd2b4bef40d7e6577072"
+        },
+        "reviewed_current_medications": {
+            "question": "Have you reviewed your current medications, including name, dosage, frequency, and route?",
+            "id": "66dfcd3a4bef40d7e6577074"
+        },
+        "current_medication_name": {
+            "question": "What is the name of the medication you are currently taking?",
+            "id": "66e07216973e7e3e485f6d2a"
+        }
+    }
+}
