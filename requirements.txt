@@ -15,4 +15,4 @@ langchain-openai==0.2.0
 langchain-chroma==0.1.4
 protobuf==3.20.*
 jina
-pydantic=2.9.2
+pydantic
