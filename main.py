@@ -32,7 +32,12 @@ class entityModel(BaseModel):
 # Define your routes here
 @router.get("/health")
 async def health():
-    return {"status": "all ok"}
+    try:
+        db.create_connection()
+        return {"status": "all ok"}
+    except Exception as e: 
+        print(f"The error '{e}' occurred")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/summary")
 async def summary(query_model: QueryModel):
