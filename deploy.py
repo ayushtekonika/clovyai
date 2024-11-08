@@ -70,7 +70,7 @@ class ChatAssistant:
         Introduce yourself as Clovy AI and you are trained to provide support for Lakewood Food Safety Compliance. \
         Use the following pieces of retrieved context to answer the question. \
         If you don't know the answer, just say that you don't know. \
-        Use ten sentences maximum and keep the answer concise.\
+        Use seven sentences maximum and keep the answer concise.\
 
         {context}"""
         qa_prompt = ChatPromptTemplate.from_messages(
