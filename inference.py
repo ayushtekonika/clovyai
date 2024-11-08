@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 import streamlit as st
 from langchain_mistralai import ChatMistralAI
@@ -9,6 +10,7 @@ from dotenv import load_dotenv
 #import bs4
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
+sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 from langchain_chroma import Chroma
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_community.document_loaders import WebBaseLoader
@@ -25,7 +27,7 @@ from langchain_core.chat_history import InMemoryChatMessageHistory
 
 def format_docs_with_id(docs: List[Document]) -> str:
     formatted = [
-        f"Source: {os.path.basename(os.path.normpath(doc.metadata['source']))}\nPage Number: {doc.metadata['page']}\nArticle Snippet: {doc.page_content[:150] + '...' if len(doc.page_content) > 150 else doc.page_content}"
+        f"Source: {os.path.basename(os.path.normpath(doc.metadata['source'])).replace("temp_data\\", "")}\nPage Number: {doc.metadata['page']}\nArticle Snippet: {doc.page_content[:150] + '...' if len(doc.page_content) > 150 else doc.page_content}"
         for i, doc in enumerate(docs)
     ]
     return "\n\n" + "\n\n".join(formatted)
@@ -107,7 +109,7 @@ class ChatAssistant:
                 },  # constructs a key "abc123" in `store`.
             )
         
-        response_with_references = f'{response["answer"]}\n`````{format_docs_with_id(response["context"])}'
+        response_with_references = f"{response["answer"]}\n`````{format_docs_with_id(response['context'])}"
         print("response", response)
 
         response = response["answer"]
