@@ -25,7 +25,7 @@ from langchain_core.chat_history import InMemoryChatMessageHistory
 
 def format_docs_with_id(docs: List[Document]) -> str:
     formatted = [
-        f"Source: {os.path.basename(os.path.normpath(doc.metadata['source'])).replace("temp_data\\", "")}\nPage Number: {doc.metadata['page']}\nArticle Snippet: {doc.page_content[:150] + '...' if len(doc.page_content) > 150 else doc.page_content}"
+        f"Source: {os.path.basename(os.path.normpath(doc.metadata['source'])).replace('temp_data\\', '')}\nPage Number: {doc.metadata['page']}\nArticle Snippet: {doc.page_content[:150] + '...' if len(doc.page_content) > 150 else doc.page_content}"
         for i, doc in enumerate(docs)
     ]
     return "\n\n" + "\n\n".join(formatted)
