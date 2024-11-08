@@ -1,5 +1,4 @@
 import os
-import sys
 import logging
 import streamlit as st
 from langchain_mistralai import ChatMistralAI
@@ -10,7 +9,6 @@ from dotenv import load_dotenv
 #import bs4
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
 from langchain_chroma import Chroma
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_community.document_loaders import WebBaseLoader
@@ -125,8 +123,8 @@ def main():
     
     session_id = "123455"  # Static session ID for example purposes
 
-    st.title("City of Lakewood generative AI research tool")
-    st.write("Ask questions based on food safety. Type your query below.")
+    st.title("City of Lakewood AI-Powered Research Tool")
+    st.write("(I have only ingested limited information on \"Food Safety\")")
 
     query = st.text_input("Your question:", placeholder="Type your question here...")
     if st.button("Submit") and query:
